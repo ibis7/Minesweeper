@@ -1,0 +1,14 @@
+﻿.cell {
+	height: 30px;
+	width: 30px;
+	border: 1px solid #535353;
+	font-weight: bold;
+}
+
+.revealed {
+	background-color: white;
+}
+
+.hidden {
+	background-color: #858585;
+}

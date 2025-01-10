@@ -1,0 +1,33 @@
+﻿<div @onclick:preventDefault @onclick:stopPropagation>
+    <div class="@($"cell {(Cell.IsRevealed ? RevealedClass : HiddenClass)}")" @onclick="Click" @onclick:preventDefault @onclick:stopPropagation>
+        @if (Cell.IsRevealed)
+        {
+            @if (Cell.IsMine != null)
+            {
+                @if (Cell.IsMine.Value)
+                {
+                    <span class="mine">💣</span>
+                }
+                else
+                {
+                    @if (Cell.AdjacentMines > 0)
+                    {
+                        <span class="number">@Cell.AdjacentMines</span>
+                    }
+                    else
+                    {
+                        <span class="empty"></span>
+                    }
+                }
+            }
+            
+        }
+        else
+        {
+            @if (Cell.IsFlagged)
+            {
+                <span class="flag">🚩</span>
+            }
+        }
+    </div>
+</div>

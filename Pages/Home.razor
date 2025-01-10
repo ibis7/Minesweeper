@@ -1,0 +1,16 @@
+﻿@page "/"
+
+<PageTitle>Minesweeper</PageTitle>
+
+<span>Select board rows:</span>
+<input type="number" @bind="SelectedRows" />
+<span>Select board columns:</span>
+<input type="number" @bind="SelectedColumns" />
+<span>Select number of mines:</span>
+<input type="number" @bind="SelectedMines" />
+<button @onclick="StartGame">Start Game</button>
+
+@if (Game != null)
+{
+    <MinesweeperGame Game="Game" />
+}
