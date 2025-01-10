@@ -12,6 +12,10 @@
         public Cell[][]? Board { get; set; } = null;
         public bool IsBoardStarted { get; set; } = false;
 
+        public int RevealedCells { get; set; } = 0;
+        public int TotalCells => Rows * Columns;
+
+
         public Game(int rows, int columns, int mines)
         {
             Rows = rows;
@@ -30,7 +34,7 @@
 
         private bool IsBoardValid()
         {
-            return Rows > 0 && Columns > 0 && Mines > 0 && Mines <= (Rows * Columns) - 9;
+            return Rows > 0 && Columns > 0 && Mines > 0 && Mines <= TotalCells - 9;
         }
 
         private void CreateBoard()
@@ -46,11 +50,12 @@
             }
         }
 
-        private void CreateGame(int initialRow, int initialColumn)
+        public void CreateGame(int initialRow, int initialColumn)
         {
             DesignateSafeClickZone(initialRow, initialColumn);
             PopulateMines();
             CalculateAdjacentMines();
+            IsBoardStarted = true;
         }
 
         private void DesignateSafeClickZone(int initialRow, int initialColumn)
@@ -132,25 +137,22 @@
             }
         }
 
-        private void CheckGameWon()
+        #endregion
+
+        public int MineCounter()
         {
             if (Board == null)
             {
                 throw new InvalidOperationException("Board is not initialized");
             }
 
-            if (IsGameOver) return;
+            if (!IsBoardStarted) return Mines;
 
-            var totalCells = Rows * Columns;
-            var unrevealedCells = Board.SelectMany(c => c).Count(c => !c.IsRevealed);
+            var mineCount = Board.SelectMany(c => c).Count(c => c.IsMine == true);
+            var flagCount = Board.SelectMany(c => c).Count(c => c.IsFlagged);
 
-            if (unrevealedCells == Mines || unrevealedCells == totalCells - Mines)
-            {
-                IsGameWon = true;
-            }
+            return mineCount - flagCount;
         }
-
-        #endregion
 
         public Cell? GetCell(int row, int column)
         {
@@ -189,94 +191,6 @@
             AddCellIfNotNull(row + 1, column + 1);
 
             return list;
-        }
-
-        public void RevealCell(Cell cell)
-        {
-            if (IsGameOver || IsGameWon) return;
-
-            if (cell == null || cell.IsRevealed || cell.IsFlagged) return;
-
-            if (!IsBoardStarted)
-            {
-                CreateGame(cell.Row, cell.Column);
-                IsBoardStarted = true;
-            }
-
-            var success = cell.Reveal();
-
-            if (!success)
-            {
-                IsGameOver = true;
-            }
-
-            if (cell.AdjacentMines == 0)
-            {
-                var surroundingCells = GetSurroundingCells(cell.Row, cell.Column);
-                foreach (var c in surroundingCells)
-                {
-                    RevealCell(c);
-                }
-            }
-
-            CheckGameWon();
-        }
-
-        public void RevealCell(int row, int column)
-        {
-            if (IsGameOver || IsGameWon) return;
-
-            if (Board == null)
-            {
-                throw new InvalidOperationException("Board is not initialized");
-            }
-
-            var cell = GetCell(row, column);
-
-            if (cell == null || cell.IsRevealed || cell.IsFlagged) return;
-
-            if (!IsBoardStarted)
-            {
-                CreateGame(row, column);
-                IsBoardStarted = true;
-            }
-
-            var success = cell.Reveal();
-
-            if (!success)
-            {
-                IsGameOver = true;
-            }
-
-            if (cell.AdjacentMines == 0)
-            {
-                var surroundingCells = GetSurroundingCells(row, column);
-                foreach (var c in surroundingCells)
-                {
-                    RevealCell(c);
-                }
-            }
-
-            CheckGameWon();
-        }
-
-        public void FlagCell(Cell cell)
-        {
-            cell.ToggleFlag();
-        }
-
-        public void FlagCell(int row, int column)
-        {
-            if (Board == null)
-            {
-                throw new InvalidOperationException("Board is not initialized");
-            }
-
-            var cell = GetCell(row, column);
-
-            if (cell == null || cell.IsRevealed) return;
-
-            cell.ToggleFlag();
         }
     }
 

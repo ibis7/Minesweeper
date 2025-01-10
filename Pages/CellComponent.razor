@@ -1,18 +1,19 @@
-﻿<div @onclick:preventDefault @onclick:stopPropagation>
-    <div class="@($"cell {(Cell.IsRevealed ? RevealedClass : HiddenClass)}")" @onclick="Click" @onclick:preventDefault @onclick:stopPropagation>
+﻿<div @onclick:stopPropagation="true" @onclick:preventDefault="true">
+    <div class="@($"cell {(Cell.IsRevealed ? "revealed" : "hidden")} {(Cell.IsRevealed && Cell.IsMine.HasValue && Cell.IsMine.Value ? "clicked-mine" : "")}")"
+         @onclick="Reveal" @oncontextmenu="ToggleFlag" @oncontextmenu:preventDefault="true">
         @if (Cell.IsRevealed)
         {
             @if (Cell.IsMine != null)
             {
                 @if (Cell.IsMine.Value)
                 {
-                    <span class="mine">💣</span>
+                    <span class="clicked-mine">💣</span>
                 }
                 else
                 {
                     @if (Cell.AdjacentMines > 0)
                     {
-                        <span class="number">@Cell.AdjacentMines</span>
+                        <span class="@($"number-{(Cell.AdjacentMines)}")">@Cell.AdjacentMines</span>
                     }
                     else
                     {
@@ -20,13 +21,40 @@
                     }
                 }
             }
-            
+
         }
         else
         {
-            @if (Cell.IsFlagged)
+            @if (Game.IsGameOver)
             {
-                <span class="flag">🚩</span>
+                @if (Cell.IsMine != null)
+                {
+                    @if (Cell.IsMine.Value)
+                    {
+                        @if(Cell.IsFlagged)
+                        {
+                            <span class="flag">🚩</span>
+                        }
+                        else
+                        {
+                            <span class="mine">💣</span>
+                        }
+                    }
+                    else
+                    {
+                        @if (Cell.IsFlagged)
+                        {
+                            <span class="flag">X</span>
+                        }
+                    }
+                }
+            }
+            else
+            {
+                @if (Cell.IsFlagged)
+                {
+                    <span class="flag">🚩</span>
+                }
             }
         }
     </div>

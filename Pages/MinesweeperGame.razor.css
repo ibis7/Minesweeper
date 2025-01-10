@@ -1,5 +1,7 @@
-﻿.board {
+﻿.board-container {
 	display: flex;
-	margin-top: 5rem;
-	margin-left: 5rem;
+}
+
+.board {
+	display: flex;
 }

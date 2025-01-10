@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
 using Minesweeper.Models;
 
 namespace Minesweeper.Pages
@@ -13,35 +12,19 @@ namespace Minesweeper.Pages
         public required Game Game { get; set; }
 
         [Parameter]
-        public EventCallback Update { get; set; }
+        public EventCallback<Cell> RevealCell { get; set; }
 
-        public string HiddenClass { get; set; } = "hidden";
-        public string RevealedClass { get; set; } = "revealed";
+        [Parameter]
+        public EventCallback<Cell> FlagCell { get; set; }
 
-        public void Click(MouseEventArgs e)
+        public void ToggleFlag()
         {
-            if (e.Button == 0)
-            {
-                Reveal();
-            }
-            else if (e.Button == 2)
-            {
-                ToggleFlag();
-            }
+            FlagCell.InvokeAsync(Cell);
         }
 
-        private void ToggleFlag()
+        public void Reveal()
         {
-            Game.FlagCell(Cell);
-            StateHasChanged();
-            Update.InvokeAsync();
-        }
-
-        private void Reveal()
-        {
-            Game.RevealCell(Cell);
-            StateHasChanged();
-            Update.InvokeAsync();
+            RevealCell.InvokeAsync(Cell);
         }
     }
 }

@@ -1,4 +1,7 @@
-﻿@if (Game.IsGameOver)
+﻿<h2>Mine Count: @Game.MineCounter() </h2>
+<h2>Timer: @Timer</h2>
+
+@if (Game.IsGameOver)
 {
     <h2>Game Over!</h2>
 }
@@ -8,20 +11,21 @@
     <h2>You won!</h2>
 }
 
-
-<div class="board" @onclick:preventDefault @onclick:stopPropagation>
-    @for (var i = 0; i < Game.Rows; i++)
-    {
-        <div class="row" @onclick:preventDefault @onclick:stopPropagation>
-            @for (var j = 0; j < Game.Columns; j++)
-            {
-                var cell = Game.GetCell(i, j);
-
-                @if (cell != null)
+<div class="board-container">
+    <div class="board" @onclick:preventDefault @onclick:stopPropagation>
+        @for (var i = 0; i < Game.Rows; i++)
+        {
+            <div class="row" @onclick:preventDefault @onclick:stopPropagation>
+                @for (var j = 0; j < Game.Columns; j++)
                 {
-                    <CellComponent Cell="cell" Game="Game" Update="UpdateAsync"/>
+                    var cell = Game.GetCell(i, j);
+
+                    @if (cell != null)
+                    {
+                        <CellComponent Cell="cell" RevealCell="RevealCell" FlagCell="FlagCell" Game="Game" />
+                    }
                 }
-            }
-        </div>
-    }
+            </div>
+        }
+    </div>
 </div>

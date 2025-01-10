@@ -3,6 +3,8 @@
 	width: 30px;
 	border: 1px solid #535353;
 	font-weight: bold;
+	text-align: center;
+	line-height: 30px;
 }
 
 .revealed {
@@ -11,4 +13,40 @@
 
 .hidden {
 	background-color: #858585;
+}
+
+.number-1 {
+	color: blue;
+}
+
+.number-2 {
+	color: green;
+}
+
+.number-3 {
+	color: red;
+}
+
+.number-4 {
+	color: purple;
+}
+
+.number-5 {
+	color: maroon;
+}
+
+.number-6 {
+	color: turquoise;
+}
+
+.number-7 {
+	color: black;
+}
+
+.number-8 {
+	color: gray;
+}
+
+.clicked-mine {
+	background-color: red;
 }
