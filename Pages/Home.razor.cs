@@ -9,6 +9,8 @@ namespace Minesweeper.Pages
         public int SelectedColumns { get; set; } = 16;
         public int SelectedMines { get; set; } = 40;
 
+        public MinesweeperGame MinesweeperGameRef { get; set; } = null!;
+
         public void StartGame()
         {
             Game = new Game(SelectedRows, SelectedColumns, SelectedMines);

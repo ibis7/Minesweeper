@@ -2,6 +2,9 @@
 {
     public class Game
     {
+        private const int _maxRows = 40;
+        private const int _maxColumns = 40;
+
         public int Rows { get; set; }
         public int Columns { get; set; }
         public int Mines { get; set; }
@@ -9,10 +12,11 @@
         public bool IsGameOver { get; set; }
         public bool IsGameWon { get; set; }
 
-        public Cell[][]? Board { get; set; } = null;
+        public Cell[,]? Board { get; set; } = null;
         public bool IsBoardStarted { get; set; } = false;
 
         public int RevealedCells { get; set; } = 0;
+        public int FlaggedCells { get; set; } = 0;
         public int TotalCells => Rows * Columns;
 
 
@@ -34,24 +38,30 @@
 
         private bool IsBoardValid()
         {
-            return Rows > 0 && Columns > 0 && Mines > 0 && Mines <= TotalCells - 9;
+            return Rows > 0 && Columns > 0
+                && Rows <= _maxRows && Columns <= _maxColumns
+                && Mines > 0 && Mines <= TotalCells - 9;
         }
 
         private void CreateBoard()
         {
-            Board = new Cell[Rows][];
+            Board = new Cell[Rows, Columns];
             for (int row = 0; row < Rows; row++)
             {
-                Board[row] = new Cell[Columns];
                 for (int column = 0; column < Columns; column++)
                 {
-                    Board[row][column] = new Cell(row, column);
+                    Board[row, column] = new Cell(row, column);
                 }
             }
         }
 
-        public void CreateGame(int initialRow, int initialColumn)
+        public void StartGame(int initialRow, int initialColumn)
         {
+            if (Board == null)
+            {
+                throw new InvalidOperationException("Board is not initialized");
+            }
+
             DesignateSafeClickZone(initialRow, initialColumn);
             PopulateMines();
             CalculateAdjacentMines();
@@ -75,11 +85,6 @@
 
         private void PopulateMines()
         {
-            if (Board == null)
-            {
-                throw new InvalidOperationException("Board is not initialized");
-            }
-
             var minePositions = new HashSet<(int, int)>();
 
             while (minePositions.Count < Mines)
@@ -97,7 +102,7 @@
                 {
                     var isMine = minePositions.Contains((row, column));
 
-                    Board[row][column].IsMine = isMine;
+                    Board![row, column].IsMine = isMine;
                 }
             }
         }
@@ -117,16 +122,11 @@
 
         private void CalculateAdjacentMines()
         {
-            if (Board == null)
-            {
-                throw new InvalidOperationException("Board is not initialized");
-            }
-
             for (int row = 0; row < Rows; row++)
             {
                 for (int column = 0; column < Columns; column++)
                 {
-                    var cell = Board[row][column];
+                    var cell = Board![row, column];
 
                     if (cell.IsMine == true) continue;
 
@@ -146,49 +146,33 @@
                 throw new InvalidOperationException("Board is not initialized");
             }
 
-            if (!IsBoardStarted) return Mines;
-
-            var mineCount = Board.SelectMany(c => c).Count(c => c.IsMine == true);
-            var flagCount = Board.SelectMany(c => c).Count(c => c.IsFlagged);
-
-            return mineCount - flagCount;
+            return Mines - FlaggedCells;
         }
 
         public Cell? GetCell(int row, int column)
         {
-            if (Board == null)
-            {
-                throw new InvalidOperationException("Board is not initialized");
-            }
-
             if (column < 0 || row < 0 || column >= Columns || row >= Rows) return null;
 
-            return Board[row][column];
+            return Board![row, column];
         }
 
         public List<Cell> GetSurroundingCells(int row, int column)
         {
-            var list = new List<Cell>();
+            var list = new List<Cell>(8);
 
-            void AddCellIfNotNull(int r, int c)
+            for (int r = row - 1; r <= row + 1; r++)
             {
-                var cell = GetCell(r, c);
-                if (cell != null)
+                for (int c = column - 1; c <= column + 1; c++)
                 {
-                    list.Add(cell);
+                    if (r == row && c == column) continue; // Skip the center cell
+
+                    var cell = GetCell(r, c);
+                    if (cell != null)
+                    {
+                        list.Add(cell);
+                    }
                 }
             }
-
-            AddCellIfNotNull(row - 1, column - 1);
-            AddCellIfNotNull(row - 1, column);
-            AddCellIfNotNull(row - 1, column + 1);
-
-            AddCellIfNotNull(row, column - 1);
-            AddCellIfNotNull(row, column + 1);
-
-            AddCellIfNotNull(row + 1, column - 1);
-            AddCellIfNotNull(row + 1, column);
-            AddCellIfNotNull(row + 1, column + 1);
 
             return list;
         }

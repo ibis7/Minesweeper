@@ -1,5 +1,5 @@
 ﻿<h2>Mine Count: @Game.MineCounter() </h2>
-<h2>Timer: @Timer</h2>
+<h2>Timer: @(Timer.ToString("F1"))</h2>
 
 @if (Game.IsGameOver)
 {
@@ -13,16 +13,16 @@
 
 <div class="board-container">
     <div class="board" @onclick:preventDefault @onclick:stopPropagation>
-        @for (var i = 0; i < Game.Rows; i++)
+        @for (var c = 0; c < Game.Columns; c++)
         {
-            <div class="row" @onclick:preventDefault @onclick:stopPropagation>
-                @for (var j = 0; j < Game.Columns; j++)
+            <div class="column" @onclick:preventDefault @onclick:stopPropagation>
+                @for (var r = 0; r < Game.Rows; r++)
                 {
-                    var cell = Game.GetCell(i, j);
+                    var cell = Game.GetCell(r, c);
 
                     @if (cell != null)
                     {
-                        <CellComponent Cell="cell" RevealCell="RevealCell" FlagCell="FlagCell" Game="Game" />
+                        <CellComponent Cell="cell" RevealCell="DigCell" FlagCell="FlagCell" Game="Game" />
                     }
                 }
             </div>

@@ -13,7 +13,14 @@
 
         public void ToggleFlag()
         {
+            if (IsRevealed) return;
             IsFlagged = !IsFlagged;
+        }
+
+        public void Flag()
+        {
+            if (IsRevealed) return;
+            IsFlagged = true;
         }
 
         public bool Reveal()
