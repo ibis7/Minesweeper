@@ -120,7 +120,7 @@ namespace Minesweeper.Pages
                 }
             }
 
-            CheckGameWon();
+            CheckGameWonAfterDig();
             InvokeAsync(StateHasChanged);
         }
 
@@ -139,6 +139,16 @@ namespace Minesweeper.Pages
                         }
                     }
                 }
+            }
+        }
+
+        public void CheckGameWonAfterDig()
+        {
+            if (Game.IsGameOver) return;
+
+            if (Game.TotalCells - Game.RevealedCells == Game.Mines)
+            {
+                WinGame();
             }
         }
 
@@ -163,6 +173,7 @@ namespace Minesweeper.Pages
         private void ToggleFlag(Cell cell)
         {
             cell.ToggleFlag();
+
             if (cell.IsFlagged)
             {
                 Game.FlaggedCells++;
@@ -171,6 +182,9 @@ namespace Minesweeper.Pages
             {
                 Game.FlaggedCells--;
             }
+
+            CheckGameWonAfterFlag();
+
             InvokeAsync(StateHasChanged);
         }
 
@@ -192,18 +206,23 @@ namespace Minesweeper.Pages
             }
         }
 
-        #endregion
-
-        public void CheckGameWon()
+        public void CheckGameWonAfterFlag()
         {
             if (Game.IsGameOver) return;
 
-            if (Game.TotalCells - Game.RevealedCells == Game.Mines)
+            if (Game.MinesLeftCounter == 0 && Game.AreAllFlagsPlacedCorrectly())
             {
-                StopTimer();
-                Game.IsGameWon = true;
-                InvokeAsync(StateHasChanged);
+                WinGame();
             }
+        }
+
+        #endregion
+
+        private void WinGame()
+        {
+            StopTimer();
+            Game.IsGameWon = true;
+            InvokeAsync(StateHasChanged);
         }
     }
 }

@@ -1,7 +1,56 @@
-﻿.board-container {
+﻿.content {
 	display: flex;
+	flex-direction: column;
+	gap: 2rem;
+	margin-top: 2rem;
+}
+
+.board-container {
+	display: flex;
+	justify-content: center;
 }
 
 .board {
 	display: flex;
+	border: 10px solid #b59800;
+	border-radius: 10px;
+	font-family: sans-serif;
+}
+
+.scores {
+	display: flex;
+	justify-content: center;
+}
+
+.scores-container {
+	padding: 2px;
+	border: 1px dashed black;
+	display: flex;
+	gap: 2rem;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+.game-over {
+	display: flex;
+	justify-content: center;
+	font-size: 2rem; /* Makes the text big */
+	font-weight: bold; /* Makes the text bold */
+	color: red; /* Makes the text red */
+	width: 100%; /* Stretches the container */
+	text-align: center; /* Centers the text within the container */
+	padding: 1rem; /* Adds some padding for chunkiness */
+	background-color: #ffe6e6; /* Optional: Adds a light red background for more emphasis */
+}
+
+.game-won {
+	display: flex;
+	justify-content: center;
+	font-size: 2rem; /* Makes the text big */
+	font-weight: bold; /* Makes the text bold */
+	color: green; /* Makes the text red */
+	width: 100%; /* Stretches the container */
+	text-align: center; /* Centers the text within the container */
+	padding: 1rem; /* Adds some padding for chunkiness */
+	background-color: #e6ffe6; /* Optional: Adds a light red background for more emphasis */
 }

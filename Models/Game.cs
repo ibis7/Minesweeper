@@ -17,9 +17,11 @@
 
         public int RevealedCells { get; set; } = 0;
         public int FlaggedCells { get; set; } = 0;
+
         public int TotalCells => Rows * Columns;
+        public int MinesLeftCounter => Mines - FlaggedCells;
 
-
+        #region CreateBoard
         public Game(int rows, int columns, int mines)
         {
             Rows = rows;
@@ -34,7 +36,6 @@
             CreateBoard();
         }
 
-        #region CreateGame
 
         private bool IsBoardValid()
         {
@@ -54,6 +55,10 @@
                 }
             }
         }
+
+        #endregion
+
+        #region StartGame
 
         public void StartGame(int initialRow, int initialColumn)
         {
@@ -139,16 +144,6 @@
 
         #endregion
 
-        public int MineCounter()
-        {
-            if (Board == null)
-            {
-                throw new InvalidOperationException("Board is not initialized");
-            }
-
-            return Mines - FlaggedCells;
-        }
-
         public Cell? GetCell(int row, int column)
         {
             if (column < 0 || row < 0 || column >= Columns || row >= Rows) return null;
@@ -175,6 +170,25 @@
             }
 
             return list;
+        }
+
+        public bool AreAllFlagsPlacedCorrectly()
+        {
+            if (MinesLeftCounter != 0) return false;
+
+            for (int row = 0; row < Rows; row++)
+            {
+                for (int column = 0; column < Columns; column++)
+                {
+                    var cell = Board![row, column];
+                    if (cell.IsFlagged && cell.IsMine == false)
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
         }
     }
 

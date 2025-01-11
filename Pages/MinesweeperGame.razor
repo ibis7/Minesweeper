@@ -1,31 +1,41 @@
-﻿<h2>Mine Count: @Game.MineCounter() </h2>
-<h2>Timer: @(Timer.ToString("F1"))</h2>
+﻿<div class="content">
+    @if (Game.IsGameOver)
+    {
+        <div class="game-over">
+            <span>Game Over!</span>
+        </div>
+    }
+    else if (Game.IsGameWon)
+    {
+        <div class="game-won">
+            <span>Game Won!</span>
+        </div>
+    }
 
-@if (Game.IsGameOver)
-{
-    <h2>Game Over!</h2>
-}
+    <div class="scores">
+        <div class="scores-container">
+            <h2>💣 @Game.MinesLeftCounter </h2>
+            <h2>⌚ @(Timer.ToString("F1"))</h2>
+        </div>
+    </div>
 
-@if (Game.IsGameWon)
-{
-    <h2>You won!</h2>
-}
-
-<div class="board-container">
-    <div class="board" @onclick:preventDefault @onclick:stopPropagation>
-        @for (var c = 0; c < Game.Columns; c++)
-        {
-            <div class="column" @onclick:preventDefault @onclick:stopPropagation>
-                @for (var r = 0; r < Game.Rows; r++)
-                {
-                    var cell = Game.GetCell(r, c);
-
-                    @if (cell != null)
+    <div class="board-container">
+        <div class="board" @onclick:preventDefault @onclick:stopPropagation>
+            @for (var c = 0; c < Game.Columns; c++)
+            {
+                <div class="column" @onclick:preventDefault @onclick:stopPropagation>
+                    @for (var r = 0; r < Game.Rows; r++)
                     {
-                        <CellComponent Cell="cell" RevealCell="DigCell" FlagCell="FlagCell" Game="Game" />
+                        var cell = Game.GetCell(r, c);
+
+                        @if (cell != null)
+                        {
+                            <CellComponent Cell="cell" RevealCell="DigCell" FlagCell="FlagCell" Game="Game" />
+                        }
                     }
-                }
-            </div>
-        }
+                </div>
+            }
+        </div>
     </div>
 </div>
+

@@ -17,14 +17,9 @@
             IsFlagged = !IsFlagged;
         }
 
-        public void Flag()
-        {
-            if (IsRevealed) return;
-            IsFlagged = true;
-        }
-
         public bool Reveal()
         {
+            if (IsFlagged) return true;
             IsRevealed = true;
             return !(IsMine ?? false);
         }
